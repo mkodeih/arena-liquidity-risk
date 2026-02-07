@@ -1,0 +1,36 @@
+# Arena files
+*.bak
+*.tmp
+*.log
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+
+# Data
+*.xlsx
+*.csv
+!**/input-templates/*.xlsx
+!**/sample-data/*.csv
+
+# Results
+results/
+outputs/
+*.png
+*.pdf
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# OS
+Thumbs.db
