@@ -1,0 +1,239 @@
+# Arena Design of Experiments File
+# Type: Full Factorial Design
+# Purpose: Baseline liquidity risk scenarios under normal and moderate stress conditions
+# Created: 2024
+# Model: Intraday Liquidity Risk Simulation
+
+DESIGN_TYPE: FULL_FACTORIAL
+FACTORS: 3
+RESPONSES: 2
+REPLICATIONS: 30
+
+# ============================================================================
+# FACTOR DEFINITIONS
+# ============================================================================
+
+FACTOR_1:
+  Name: Initial_Liquidity_Ratio
+  Description: Opening liquidity as ratio of expected daily outflows
+  Type: Continuous
+  Units: Ratio
+  Levels: [0.05, 0.10, 0.15, 0.20, 0.25, 0.30]
+  Notes: |
+    - 0.05 = 5% (very low buffer)
+    - 0.10 = 10% (minimal compliance)
+    - 0.15 = 15% (moderate buffer)
+    - 0.20 = 20% (comfortable buffer)
+    - 0.25 = 25% (conservative)
+    - 0.30 = 30% (very conservative)
+  
+FACTOR_2:
+  Name: Payment_Arrival_Rate
+  Description: Average number of payments per hour
+  Type: Continuous
+  Units: Payments per hour
+  Levels: [10, 30, 50, 70, 90]
+  Notes: |
+    - 10 = Low volume (small institution)
+    - 30 = Medium-low volume
+    - 50 = Medium volume (baseline)
+    - 70 = Medium-high volume
+    - 90 = High volume (large institution)
+
+FACTOR_3:
+  Name: Market_Stress
+  Description: Market stress level indicator
+  Type: Categorical
+  Levels: [Low, Medium, High]
+  Mapping:
+    Low: 0      # Normal market conditions
+    Medium: 1   # Moderate stress
+    High: 2     # Severe stress
+  Effects:
+    Low:
+      - Normal payment flows
+      - Standard volatility
+      - No shocks
+    Medium:
+      - 10% increase in payment volatility
+      - 5% reduction in incoming payments
+      - Occasional delays
+    High:
+      - 30% increase in payment volatility
+      - 15% reduction in incoming payments  
+      - Frequent delays
+      - Possible contagion events
+
+# ============================================================================
+# RESPONSE DEFINITIONS
+# ============================================================================
+
+RESPONSE_1:
+  Name: Probability_of_Shortfall
+  Description: Probability of experiencing negative liquidity during the day
+  Type: Continuous
+  Units: Probability (0-1)
+  Arena_Expression: DAVG(ShortfallIndicator)
+  Calculation: |
+    In model, create OUTPUT statistic:
+      Expression: (MinimumBalance < 0)
+      Name: ShortfallIndicator
+    In Process Analyzer:
+      Response = DAVG(ShortfallIndicator)
+  Target: < 0.01 for normal conditions
+  
+RESPONSE_2:
+  Name: Maximum_Intraday_Deficit
+  Description: Worst liquidity deficit across all replications
+  Type: Continuous
+  Units: Currency (dollars)
+  Arena_Expression: OMAX(MaxDeficit)
+  Calculation: |
+    In model, track MaxDeficit variable
+    Export as OUTPUT statistic
+    In Process Analyzer:
+      Response = OMAX(MaxDeficit)
+  Target: < 10% of opening balance
+
+# ============================================================================
+# SCENARIO GENERATION
+# ============================================================================
+
+# Total scenarios: 6 × 5 × 3 = 90 scenarios
+# Total runs: 90 scenarios × 30 replications = 2,700 runs
+
+SCENARIOS:
+  Total_Count: 90
+  Naming_Convention: "Baseline_{Liquidity}_{Rate}_{Stress}"
+  
+# Example scenarios:
+# - Baseline_0.05_10_Low
+# - Baseline_0.10_30_Medium  
+# - Baseline_0.30_90_High
+# etc.
+
+# ============================================================================
+# ANALYSIS PLAN
+# ============================================================================
+
+ANALYSIS_APPROACH:
+  Primary_Method: ANOVA
+  Factors_to_Test:
+    - Main effects of each factor
+    - Two-way interactions
+    - Three-way interaction if significant
+  
+  Post_Hoc_Tests:
+    - Tukey HSD for pairwise comparisons
+    - Contrast analysis for stress levels
+  
+  Visualizations:
+    - Main effects plots
+    - Interaction plots
+    - Contour plots for continuous factors
+    - Box plots by stress level
+
+EXPECTED_INSIGHTS:
+  - How liquidity ratio affects shortfall probability
+  - Impact of payment volume on risk
+  - Differential effects under stress conditions
+  - Minimum buffer requirements for target risk level
+  - Payment volume capacity limits
+
+# ============================================================================
+# ARENA PROCESS ANALYZER SETUP
+# ============================================================================
+
+PROCESS_ANALYZER_CONTROLS:
+  Control_1:
+    Name: OpeningBalance
+    Expression: 10000000 * Initial_Liquidity_Ratio / 0.20
+    Notes: Scale opening balance to achieve target ratio
+  
+  Control_2:
+    Name: PaymentArrivalRate  
+    Expression: Payment_Arrival_Rate
+    Notes: Direct mapping to model variable
+  
+  Control_3:
+    Name: MarketStress
+    Expression: |
+      IF Market_Stress = "Low" THEN 0
+      ELSE IF Market_Stress = "Medium" THEN 1  
+      ELSE 2
+    Notes: Convert categorical to numeric
+
+# ============================================================================
+# EXECUTION SETTINGS
+# ============================================================================
+
+RUN_CONFIGURATION:
+  Replications_Per_Scenario: 30
+  Warmup_Period: 0
+  Replication_Length: 480  # 8 hours in minutes
+  Time_Units: Minutes
+  Initialize_Between_Reps: Yes
+  Common_Random_Numbers: Yes
+  
+RANDOM_NUMBER_STREAMS:
+  Use_Independent_Streams: Yes
+  Streams_Per_Replication: 10
+  Base_Seed: 12345
+  
+PERFORMANCE:
+  Estimated_Time_Per_Scenario: 2 minutes
+  Total_Estimated_Time: 180 minutes (3 hours)
+  Parallel_Execution: If supported
+  Batch_Mode: Recommended for full run
+
+# ============================================================================
+# OUTPUT AND REPORTING
+# ============================================================================
+
+OUTPUT_FILES:
+  - Response_Values.xlsx
+  - ANOVA_Results.txt
+  - Scenario_Comparison.xlsx
+  - Confidence_Intervals.xlsx
+
+REPORTS_TO_GENERATE:
+  - Summary statistics by scenario
+  - ANOVA table with F-statistics
+  - Factor significance ranking
+  - Optimal parameter combinations
+  - Risk heat maps
+
+# ============================================================================
+# VALIDATION
+# ============================================================================
+
+VALIDATION_CHECKS:
+  - Verify 30 replications completed per scenario
+  - Check for failed runs (investigate causes)
+  - Confirm response values in expected ranges
+  - Validate distribution assumptions for ANOVA
+  - Check for outliers
+
+# ============================================================================
+# NOTES
+# ============================================================================
+
+NOTES: |
+  This baseline DOE establishes the fundamental relationships between
+  liquidity buffers, payment volumes, and market conditions. Results
+  should be used to:
+  
+  1. Set baseline risk expectations
+  2. Calibrate the model against historical data  
+  3. Inform stress testing scenarios
+  4. Determine minimum buffer requirements
+  5. Establish operational limits
+  
+  For deeper analysis of crisis scenarios, see stress_testing.doe.
+  For parameter optimization, see optimization.doe.
+
+VERSION: 1.0
+LAST_UPDATED: 2024
+STATUS: Ready for use
+
+# End of DOE file

@@ -1,0 +1,316 @@
+# Arena Design of Experiments File
+# Type: Fractional Factorial Design (2^(5-1))
+# Purpose: Stress testing scenarios for crisis conditions
+# Resolution: V (all main effects and 2-way interactions estimable)
+# Created: 2024
+
+DESIGN_TYPE: FRACTIONAL_FACTORIAL
+FRACTION: 1/2
+RESOLUTION: V
+FACTORS: 5
+RESPONSES: 3
+REPLICATIONS: 50
+
+# ============================================================================
+# FACTOR DEFINITIONS
+# ============================================================================
+
+FACTOR_1:
+  Name: Shock_Magnitude
+  Description: Size of initial liquidity shock as fraction of opening balance
+  Type: Continuous
+  Units: Fraction (0-1)
+  Levels: [0.05, 0.10, 0.15, 0.20, 0.25]
+  Notes: |
+    - 0.05 = Minor shock (5% loss)
+    - 0.10 = Moderate shock (10% loss)
+    - 0.15 = Severe shock (15% loss)
+    - 0.20 = Major shock (20% loss)
+    - 0.25 = Extreme shock (25% loss)
+  Regulatory_Scenarios:
+    CCAR_Severely_Adverse: 0.15
+    DFAST_Adverse: 0.10
+
+FACTOR_2:
+  Name: Recovery_Days
+  Description: Days for market to recover after shock
+  Type: Discrete
+  Units: Days
+  Levels: [5, 10, 15, 20]
+  Notes: |
+    - 5 = Quick recovery (1 week)
+    - 10 = Moderate recovery (2 weeks)
+    - 15 = Slow recovery (3 weeks)
+    - 20 = Very slow recovery (1 month)
+
+FACTOR_3:
+  Name: Contagion_Probability
+  Description: Probability of contagion from counterparty failure
+  Type: Continuous
+  Units: Probability (0-1)
+  Levels: [0.1, 0.3, 0.5, 0.7]
+  Notes: |
+    - 0.1 = Low contagion risk
+    - 0.3 = Moderate contagion risk
+    - 0.5 = High contagion risk
+    - 0.7 = Very high contagion risk
+  
+FACTOR_4:
+  Name: Credit_Line_Reduction
+  Description: Haircut applied to credit facilities during stress
+  Type: Continuous
+  Units: Fraction (0-1)
+  Levels: [0.0, 0.25, 0.50, 0.75]
+  Notes: |
+    - 0.0 = No reduction (credit line fully available)
+    - 0.25 = 25% reduction
+    - 0.50 = 50% reduction (severe stress)
+    - 0.75 = 75% reduction (extreme stress)
+
+FACTOR_5:
+  Name: Collateral_Haircut_Increase
+  Description: Additional haircut on collateral value
+  Type: Continuous  
+  Units: Fraction (0-1)
+  Levels: [0.0, 0.05, 0.10, 0.15]
+  Notes: |
+    - 0.0 = No additional haircut
+    - 0.05 = 5% additional haircut
+    - 0.10 = 10% additional haircut
+    - 0.15 = 15% additional haircut (fire sale conditions)
+
+# ============================================================================
+# RESPONSE DEFINITIONS
+# ============================================================================
+
+RESPONSE_1:
+  Name: Survival_Probability
+  Description: Probability of surviving the stress period without failure
+  Type: Continuous
+  Units: Probability (0-1)
+  Arena_Expression: 1 - DAVG(FailureIndicator)
+  Calculation: |
+    In model:
+      FailureIndicator = 1 if (CurrentBalance + CreditLineUsed) < -CreditLineLimit
+      FailureIndicator = 0 otherwise
+    Response = 1 - DAVG(FailureIndicator)
+  Target: > 0.99 (regulatory requirement)
+
+RESPONSE_2:
+  Name: Liquidity_Coverage_Ratio
+  Description: Minimum LCR during stress period
+  Type: Continuous
+  Units: Ratio
+  Arena_Expression: OMIN(LCR_Daily)
+  Calculation: |
+    LCR = High Quality Liquid Assets / Net Cash Outflows (30 days)
+    Track minimum value during simulation
+  Target: > 1.0 (Basel III requirement)
+
+RESPONSE_3:
+  Name: Days_to_Failure
+  Description: Number of days until liquidity exhaustion (if failure occurs)
+  Type: Continuous
+  Units: Days
+  Arena_Expression: TAVG(DaysToFailure)
+  Calculation: |
+    If failure occurs: DaysToFailure = TNOW / (60 * 24)
+    If no failure: DaysToFailure = ReplicationLength / (60 * 24)
+  Notes: Higher is better; use only for scenarios with failures
+
+# ============================================================================
+# FRACTIONAL FACTORIAL DESIGN
+# ============================================================================
+
+DESIGN_GENERATOR: I = ABCDE
+# This creates a Resolution V design with 16 runs (2^(5-1))
+# All main effects and 2-way interactions are estimable
+
+SCENARIO_TABLE:
+  # Run  A    B   C    D    E    (Shock, Recovery, Contagion, Credit, Collateral)
+  #  1   -    -   -    -    -
+  #  2   +    -   -    -    +
+  #  3   -    +   -    -    +
+  #  4   +    +   -    -    -
+  #  5   -    -   +    -    +
+  #  6   +    -   +    -    -
+  #  7   -    +   +    -    -
+  #  8   +    +   +    -    +
+  #  9   -    -   -    +    +
+  # 10   +    -   -    +    -
+  # 11   -    +   -    +    -
+  # 12   +    +   -    +    +
+  # 13   -    -   +    +    -
+  # 14   +    -   +    +    +
+  # 15   -    +   +    +    +
+  # 16   +    +   +    +    -
+  
+  Total_Scenarios: 16
+  Replications_Per_Scenario: 50
+  Total_Runs: 800
+
+# ============================================================================
+# STRESS SCENARIO DEFINITIONS
+# ============================================================================
+
+PREDEFINED_SCENARIOS:
+  
+  Mild_Stress:
+    Shock_Magnitude: 0.05
+    Recovery_Days: 5
+    Contagion_Probability: 0.1
+    Credit_Line_Reduction: 0.0
+    Collateral_Haircut_Increase: 0.0
+    
+  Moderate_Stress:
+    Shock_Magnitude: 0.10
+    Recovery_Days: 10
+    Contagion_Probability: 0.3
+    Credit_Line_Reduction: 0.25
+    Collateral_Haircut_Increase: 0.05
+    
+  Severe_Stress:
+    Shock_Magnitude: 0.15
+    Recovery_Days: 15
+    Contagion_Probability: 0.5
+    Credit_Line_Reduction: 0.50
+    Collateral_Haircut_Increase: 0.10
+    
+  Extreme_Stress:
+    Shock_Magnitude: 0.25
+    Recovery_Days: 20
+    Contagion_Probability: 0.7
+    Credit_Line_Reduction: 0.75
+    Collateral_Haircut_Increase: 0.15
+
+# ============================================================================
+# ANALYSIS PLAN
+# ============================================================================
+
+ANALYSIS_APPROACH:
+  Primary_Method: Fractional Factorial ANOVA
+  Effects_to_Estimate:
+    - All 5 main effects
+    - All 10 two-way interactions
+    - Selected higher-order interactions if significant
+  
+  Additional_Analysis:
+    - Logistic regression for survival probability
+    - Survival analysis (Kaplan-Meier)
+    - Stress testing metrics dashboard
+  
+  Sensitivity_Measures:
+    - Partial R-squared for each factor
+    - Standardized effect sizes
+    - Tornado diagrams
+
+CRITICAL_SCENARIOS:
+  Identify_Scenarios_Where:
+    - Survival_Probability < 0.95
+    - LCR < 1.0
+    - Days_to_Failure < 7
+  
+  Risk_Ranking:
+    - Rank scenarios by composite risk score
+    - Identify worst-case combinations
+    - Map to regulatory stress scenarios
+
+# ============================================================================
+# EXECUTION SETTINGS
+# ============================================================================
+
+RUN_CONFIGURATION:
+  Replications_Per_Scenario: 50  # Higher for stress testing
+  Replication_Length: 20160  # 2 weeks (14 days × 24 hours × 60 min)
+  Warmup_Period: 0
+  Time_Units: Minutes
+  Initialize_Between_Reps: Yes
+  Common_Random_Numbers: Yes
+  
+SHOCK_TIMING:
+  Shock_Start_Time: 480  # Day 1, hour 8 (market open)
+  Shock_Duration: 60  # 1 hour shock event
+  Recovery_Start: 540  # Begin recovery after 1 hour
+
+PERFORMANCE:
+  Estimated_Time_Per_Scenario: 5 minutes
+  Total_Estimated_Time: 80 minutes
+  Parallel_Execution: Highly recommended
+  Batch_Mode: Required for full run
+
+# ============================================================================
+# VALIDATION
+# ============================================================================
+
+VALIDATION_CHECKS:
+  Model_Verification:
+    - Verify shock is applied correctly
+    - Check credit line reduction logic
+    - Validate collateral haircut calculation
+    - Confirm contagion probability mechanism
+    
+  Results_Validation:
+    - Compare with historical stress events
+    - Check against regulatory benchmarks
+    - Verify failure conditions are accurate
+    - Validate recovery trajectories
+
+# ============================================================================
+# REGULATORY MAPPING
+# ============================================================================
+
+REGULATORY_SCENARIOS:
+  
+  CCAR_Severely_Adverse:
+    Map_To:
+      Shock_Magnitude: 0.15
+      Recovery_Days: 15
+      Contagion_Probability: 0.5
+      Credit_Line_Reduction: 0.50
+      Collateral_Haircut_Increase: 0.10
+  
+  DFAST_Adverse:
+    Map_To:
+      Shock_Magnitude: 0.10
+      Recovery_Days: 10
+      Contagion_Probability: 0.3
+      Credit_Line_Reduction: 0.25
+      Collateral_Haircut_Increase: 0.05
+      
+  EBA_Adverse:
+    Map_To:
+      Shock_Magnitude: 0.12
+      Recovery_Days: 12
+      Contagion_Probability: 0.4
+      Credit_Line_Reduction: 0.30
+      Collateral_Haircut_Increase: 0.07
+
+# ============================================================================
+# NOTES
+# ============================================================================
+
+NOTES: |
+  This stress testing DOE evaluates resilience under crisis conditions.
+  
+  Key uses:
+  1. Regulatory stress testing compliance
+  2. Risk appetite calibration
+  3. Contingency funding plan validation
+  4. Capital adequacy assessment
+  5. Identification of vulnerabilities
+  
+  Results should inform:
+  - Minimum buffer requirements
+  - Credit line sizing
+  - Collateral management strategy
+  - Recovery plan triggers
+  - Board risk reporting
+  
+  For baseline scenarios, see baseline_scenarios.doe.
+  For optimization, see optimization.doe.
+
+VERSION: 1.0
+LAST_UPDATED: 2024
+STATUS: Ready for use
+
+# End of DOE file

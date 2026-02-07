@@ -1,0 +1,23 @@
+Institution_ID,Institution_Name,Initial_Reserve,Reserve_Ratio,Credit_Limit,Collateral_Haircut,Liquidity_Buffer,Risk_Category
+INST001,Central Bank Alpha,50000000,0.15,10000000,0.15,8000000,AAA
+INST002,Commercial Bank Beta,25000000,0.12,5000000,0.20,4000000,AA
+INST003,Investment Bank Gamma,15000000,0.10,3000000,0.25,2000000,A
+INST004,Regional Bank Delta,10000000,0.13,2500000,0.20,1500000,AA
+INST005,Cooperative Bank Epsilon,8000000,0.14,2000000,0.18,1000000,AA
+
+# Configuration Template for Financial Institutions
+# 
+# Column Descriptions:
+# - Institution_ID: Unique identifier for each institution
+# - Institution_Name: Full name of the financial institution
+# - Initial_Reserve: Starting liquidity reserves (currency units)
+# - Reserve_Ratio: Fraction of assets held as reserves (0-1)
+# - Credit_Limit: Maximum interbank credit line (currency units)
+# - Collateral_Haircut: Discount applied to collateral value (0-1)
+# - Liquidity_Buffer: Additional emergency reserves (currency units)
+# - Risk_Category: Credit rating (AAA, AA, A, BBB, etc.)
+#
+# Notes:
+# - Reserve ratios must meet regulatory minimums (typically ≥ 0.10)
+# - Credit limits should reflect counterparty risk assessment
+# - Haircuts increase with asset volatility and risk category
