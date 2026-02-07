@@ -1,0 +1,282 @@
+BEGIN DESIGN
+  VERSION=1.0
+  NAME=Sensitivity Analysis - One-at-a-Time
+  TYPE=One-at-a-Time (OAT) Design
+  DESCRIPTION=Systematic sensitivity analysis varying each parameter ±20% from baseline to measure elasticity
+  AUTHOR=Arena Liquidity Risk Analysis
+  DATE=2026-02-07
+  REPLICATIONS=30
+  BASELINE_RUN=TRUE
+END DESIGN
+
+BEGIN BASELINE
+  Initial_Liquidity_Ratio=0.15
+  Daily_Withdrawal_Rate=0.03
+  Market_Stress_Level=Medium
+  Cash_Buffer_Percentage=15.0
+  Asset_Liquidation_Threshold=30.0
+  Emergency_Funding_Cost=2.75
+  Shock_Magnitude=10.0
+  Recovery_Time=10
+  Contagion_Probability=0.3
+  Interest_Rate=0.02
+  Asset_Volatility=0.15
+  Correlation_Coefficient=0.5
+  Regulatory_Minimum=0.10
+END BASELINE
+
+BEGIN FACTORS
+  COUNT=13
+  
+  FACTOR 1
+    NAME=Initial_Liquidity_Ratio
+    TYPE=Numeric
+    BASELINE=0.15
+    LOW=-20%
+    HIGH=+20%
+    VALUES=0.12,0.15,0.18
+    DESCRIPTION=Initial liquidity buffer ratio
+  END FACTOR
+  
+  FACTOR 2
+    NAME=Daily_Withdrawal_Rate
+    TYPE=Numeric
+    BASELINE=0.03
+    LOW=-20%
+    HIGH=+20%
+    VALUES=0.024,0.03,0.036
+    DESCRIPTION=Daily withdrawal rate
+  END FACTOR
+  
+  FACTOR 3
+    NAME=Market_Stress_Level
+    TYPE=Categorical
+    BASELINE=Medium
+    VALUES=Low,Medium,High
+    DESCRIPTION=Market stress scenario
+  END FACTOR
+  
+  FACTOR 4
+    NAME=Cash_Buffer_Percentage
+    TYPE=Numeric
+    BASELINE=15.0
+    LOW=-20%
+    HIGH=+20%
+    VALUES=12.0,15.0,18.0
+    DESCRIPTION=Target cash buffer percentage
+  END FACTOR
+  
+  FACTOR 5
+    NAME=Asset_Liquidation_Threshold
+    TYPE=Numeric
+    BASELINE=30.0
+    LOW=-20%
+    HIGH=+20%
+    VALUES=24.0,30.0,36.0
+    DESCRIPTION=Asset liquidation trigger threshold
+  END FACTOR
+  
+  FACTOR 6
+    NAME=Emergency_Funding_Cost
+    TYPE=Numeric
+    BASELINE=2.75
+    LOW=-20%
+    HIGH=+20%
+    VALUES=2.20,2.75,3.30
+    DESCRIPTION=Emergency funding cost rate
+  END FACTOR
+  
+  FACTOR 7
+    NAME=Shock_Magnitude
+    TYPE=Numeric
+    BASELINE=10.0
+    LOW=-20%
+    HIGH=+20%
+    VALUES=8.0,10.0,12.0
+    DESCRIPTION=Liquidity shock magnitude
+  END FACTOR
+  
+  FACTOR 8
+    NAME=Recovery_Time
+    TYPE=Numeric
+    BASELINE=10
+    LOW=-20%
+    HIGH=+20%
+    VALUES=8,10,12
+    DESCRIPTION=Market recovery time in days
+  END FACTOR
+  
+  FACTOR 9
+    NAME=Contagion_Probability
+    TYPE=Numeric
+    BASELINE=0.3
+    LOW=-20%
+    HIGH=+20%
+    VALUES=0.24,0.30,0.36
+    DESCRIPTION=Contagion spread probability
+  END FACTOR
+  
+  FACTOR 10
+    NAME=Interest_Rate
+    TYPE=Numeric
+    BASELINE=0.02
+    LOW=-20%
+    HIGH=+20%
+    VALUES=0.016,0.02,0.024
+    DESCRIPTION=Market interest rate
+  END FACTOR
+  
+  FACTOR 11
+    NAME=Asset_Volatility
+    TYPE=Numeric
+    BASELINE=0.15
+    LOW=-20%
+    HIGH=+20%
+    VALUES=0.12,0.15,0.18
+    DESCRIPTION=Asset price volatility
+  END FACTOR
+  
+  FACTOR 12
+    NAME=Correlation_Coefficient
+    TYPE=Numeric
+    BASELINE=0.5
+    LOW=-20%
+    HIGH=+20%
+    VALUES=0.40,0.50,0.60
+    DESCRIPTION=Asset return correlation
+  END FACTOR
+  
+  FACTOR 13
+    NAME=Regulatory_Minimum
+    TYPE=Numeric
+    BASELINE=0.10
+    LOW=-20%
+    HIGH=+20%
+    VALUES=0.08,0.10,0.12
+    DESCRIPTION=Regulatory minimum liquidity ratio
+  END FACTOR
+END FACTORS
+
+BEGIN RESPONSES
+  COUNT=6
+  
+  RESPONSE 1
+    NAME=Days_To_Illiquidity
+    TYPE=Numeric
+    UNITS=Days
+    ELASTICITY=TRUE
+    DESCRIPTION=Time until liquidity crisis
+  END RESPONSE
+  
+  RESPONSE 2
+    NAME=Maximum_Drawdown
+    TYPE=Numeric
+    UNITS=Percentage
+    ELASTICITY=TRUE
+    DESCRIPTION=Maximum liquidity decline
+  END RESPONSE
+  
+  RESPONSE 3
+    NAME=Survival_Probability
+    TYPE=Numeric
+    UNITS=Probability
+    ELASTICITY=TRUE
+    DESCRIPTION=Probability of survival
+  END RESPONSE
+  
+  RESPONSE 4
+    NAME=Total_Cost
+    TYPE=Numeric
+    UNITS=Currency
+    ELASTICITY=TRUE
+    DESCRIPTION=Total operational cost
+  END RESPONSE
+  
+  RESPONSE 5
+    NAME=Risk_Adjusted_Return
+    TYPE=Numeric
+    UNITS=Ratio
+    ELASTICITY=TRUE
+    DESCRIPTION=Risk-adjusted performance
+  END RESPONSE
+  
+  RESPONSE 6
+    NAME=Liquidity_Coverage_Ratio
+    TYPE=Numeric
+    UNITS=Ratio
+    ELASTICITY=TRUE
+    DESCRIPTION=Minimum LCR during scenario
+  END RESPONSE
+END RESPONSES
+
+BEGIN RUN_MATRIX
+  RUNS=39
+  # One baseline run + 13 factors × 3 levels (low, baseline, high) = 1 + 38 = 39 runs
+  # Each factor varied independently while others held at baseline
+  # Format: Run, Parameter_Name, Value, Run_Type
+  
+  # Baseline Run
+  RUN 1,ALL,BASELINE,Baseline
+  
+  # Factor 1: Initial_Liquidity_Ratio variations
+  RUN 2,Initial_Liquidity_Ratio,0.12,Low
+  RUN 3,Initial_Liquidity_Ratio,0.18,High
+  
+  # Factor 2: Daily_Withdrawal_Rate variations
+  RUN 4,Daily_Withdrawal_Rate,0.024,Low
+  RUN 5,Daily_Withdrawal_Rate,0.036,High
+  
+  # Factor 3: Market_Stress_Level variations
+  RUN 6,Market_Stress_Level,Low,Low
+  RUN 7,Market_Stress_Level,High,High
+  
+  # Factor 4: Cash_Buffer_Percentage variations
+  RUN 8,Cash_Buffer_Percentage,12.0,Low
+  RUN 9,Cash_Buffer_Percentage,18.0,High
+  
+  # Factor 5: Asset_Liquidation_Threshold variations
+  RUN 10,Asset_Liquidation_Threshold,24.0,Low
+  RUN 11,Asset_Liquidation_Threshold,36.0,High
+  
+  # Factor 6: Emergency_Funding_Cost variations
+  RUN 12,Emergency_Funding_Cost,2.20,Low
+  RUN 13,Emergency_Funding_Cost,3.30,High
+  
+  # Factor 7: Shock_Magnitude variations
+  RUN 14,Shock_Magnitude,8.0,Low
+  RUN 15,Shock_Magnitude,12.0,High
+  
+  # Factor 8: Recovery_Time variations
+  RUN 16,Recovery_Time,8,Low
+  RUN 17,Recovery_Time,12,High
+  
+  # Factor 9: Contagion_Probability variations
+  RUN 18,Contagion_Probability,0.24,Low
+  RUN 19,Contagion_Probability,0.36,High
+  
+  # Factor 10: Interest_Rate variations
+  RUN 20,Interest_Rate,0.016,Low
+  RUN 21,Interest_Rate,0.024,High
+  
+  # Factor 11: Asset_Volatility variations
+  RUN 22,Asset_Volatility,0.12,Low
+  RUN 23,Asset_Volatility,0.18,High
+  
+  # Factor 12: Correlation_Coefficient variations
+  RUN 24,Correlation_Coefficient,0.40,Low
+  RUN 25,Correlation_Coefficient,0.60,High
+  
+  # Factor 13: Regulatory_Minimum variations
+  RUN 26,Regulatory_Minimum,0.08,Low
+  RUN 27,Regulatory_Minimum,0.12,High
+END RUN_MATRIX
+
+BEGIN ANALYSIS
+  METHOD=Elasticity Analysis
+  CONFIDENCE=0.95
+  ELASTICITY_CALCULATION=Percentage Change Method
+  TORNADO_DIAGRAM=TRUE
+  SPIDER_PLOT=TRUE
+  RANKINGS=By Absolute Elasticity
+  SENSITIVITY_INDEX=Standardized Regression Coefficient
+END ANALYSIS

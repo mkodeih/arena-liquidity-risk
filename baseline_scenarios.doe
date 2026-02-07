@@ -1,0 +1,166 @@
+BEGIN DESIGN
+  VERSION=1.0
+  NAME=Baseline Liquidity Risk Scenarios
+  TYPE=Full Factorial Design
+  DESCRIPTION=Systematic exploration of baseline liquidity parameters to assess days to illiquidity and maximum drawdown
+  AUTHOR=Arena Liquidity Risk Analysis
+  DATE=2026-02-07
+  REPLICATIONS=30
+END DESIGN
+
+BEGIN FACTORS
+  COUNT=3
+  
+  FACTOR 1
+    NAME=Initial_Liquidity_Ratio
+    TYPE=Numeric
+    SUBTYPE=Discrete
+    UNITS=Ratio
+    LEVELS=6
+    VALUES=0.05,0.10,0.15,0.20,0.25,0.30
+    DESCRIPTION=Initial liquidity buffer as ratio of total assets
+  END FACTOR
+  
+  FACTOR 2
+    NAME=Daily_Withdrawal_Rate
+    TYPE=Numeric
+    SUBTYPE=Discrete
+    UNITS=Ratio
+    LEVELS=5
+    VALUES=0.01,0.03,0.05,0.07,0.10
+    DESCRIPTION=Daily withdrawal rate as proportion of liquid assets
+  END FACTOR
+  
+  FACTOR 3
+    NAME=Market_Stress_Level
+    TYPE=Categorical
+    LEVELS=3
+    VALUES=Low,Medium,High
+    DESCRIPTION=Market stress scenario affecting asset liquidation
+  END FACTOR
+END FACTORS
+
+BEGIN RESPONSES
+  COUNT=2
+  
+  RESPONSE 1
+    NAME=Days_To_Illiquidity
+    TYPE=Numeric
+    UNITS=Days
+    GOAL=Maximize
+    DESCRIPTION=Number of days until liquidity falls below critical threshold
+  END RESPONSE
+  
+  RESPONSE 2
+    NAME=Maximum_Drawdown
+    TYPE=Numeric
+    UNITS=Percentage
+    GOAL=Minimize
+    DESCRIPTION=Maximum percentage decline in liquidity buffer
+  END RESPONSE
+END RESPONSES
+
+BEGIN RUN_MATRIX
+  RUNS=90
+  # Full factorial: 6 × 5 × 3 = 90 runs
+  # Format: Run, Initial_Liquidity_Ratio, Daily_Withdrawal_Rate, Market_Stress_Level
+  
+  RUN 1,0.05,0.01,Low
+  RUN 2,0.05,0.01,Medium
+  RUN 3,0.05,0.01,High
+  RUN 4,0.05,0.03,Low
+  RUN 5,0.05,0.03,Medium
+  RUN 6,0.05,0.03,High
+  RUN 7,0.05,0.05,Low
+  RUN 8,0.05,0.05,Medium
+  RUN 9,0.05,0.05,High
+  RUN 10,0.05,0.07,Low
+  RUN 11,0.05,0.07,Medium
+  RUN 12,0.05,0.07,High
+  RUN 13,0.05,0.10,Low
+  RUN 14,0.05,0.10,Medium
+  RUN 15,0.05,0.10,High
+  RUN 16,0.10,0.01,Low
+  RUN 17,0.10,0.01,Medium
+  RUN 18,0.10,0.01,High
+  RUN 19,0.10,0.03,Low
+  RUN 20,0.10,0.03,Medium
+  RUN 21,0.10,0.03,High
+  RUN 22,0.10,0.05,Low
+  RUN 23,0.10,0.05,Medium
+  RUN 24,0.10,0.05,High
+  RUN 25,0.10,0.07,Low
+  RUN 26,0.10,0.07,Medium
+  RUN 27,0.10,0.07,High
+  RUN 28,0.10,0.10,Low
+  RUN 29,0.10,0.10,Medium
+  RUN 30,0.10,0.10,High
+  RUN 31,0.15,0.01,Low
+  RUN 32,0.15,0.01,Medium
+  RUN 33,0.15,0.01,High
+  RUN 34,0.15,0.03,Low
+  RUN 35,0.15,0.03,Medium
+  RUN 36,0.15,0.03,High
+  RUN 37,0.15,0.05,Low
+  RUN 38,0.15,0.05,Medium
+  RUN 39,0.15,0.05,High
+  RUN 40,0.15,0.07,Low
+  RUN 41,0.15,0.07,Medium
+  RUN 42,0.15,0.07,High
+  RUN 43,0.15,0.10,Low
+  RUN 44,0.15,0.10,Medium
+  RUN 45,0.15,0.10,High
+  RUN 46,0.20,0.01,Low
+  RUN 47,0.20,0.01,Medium
+  RUN 48,0.20,0.01,High
+  RUN 49,0.20,0.03,Low
+  RUN 50,0.20,0.03,Medium
+  RUN 51,0.20,0.03,High
+  RUN 52,0.20,0.05,Low
+  RUN 53,0.20,0.05,Medium
+  RUN 54,0.20,0.05,High
+  RUN 55,0.20,0.07,Low
+  RUN 56,0.20,0.07,Medium
+  RUN 57,0.20,0.07,High
+  RUN 58,0.20,0.10,Low
+  RUN 59,0.20,0.10,Medium
+  RUN 60,0.20,0.10,High
+  RUN 61,0.25,0.01,Low
+  RUN 62,0.25,0.01,Medium
+  RUN 63,0.25,0.01,High
+  RUN 64,0.25,0.03,Low
+  RUN 65,0.25,0.03,Medium
+  RUN 66,0.25,0.03,High
+  RUN 67,0.25,0.05,Low
+  RUN 68,0.25,0.05,Medium
+  RUN 69,0.25,0.05,High
+  RUN 70,0.25,0.07,Low
+  RUN 71,0.25,0.07,Medium
+  RUN 72,0.25,0.07,High
+  RUN 73,0.25,0.10,Low
+  RUN 74,0.25,0.10,Medium
+  RUN 75,0.25,0.10,High
+  RUN 76,0.30,0.01,Low
+  RUN 77,0.30,0.01,Medium
+  RUN 78,0.30,0.01,High
+  RUN 79,0.30,0.03,Low
+  RUN 80,0.30,0.03,Medium
+  RUN 81,0.30,0.03,High
+  RUN 82,0.30,0.05,Low
+  RUN 83,0.30,0.05,Medium
+  RUN 84,0.30,0.05,High
+  RUN 85,0.30,0.07,Low
+  RUN 86,0.30,0.07,Medium
+  RUN 87,0.30,0.07,High
+  RUN 88,0.30,0.10,Low
+  RUN 89,0.30,0.10,Medium
+  RUN 90,0.30,0.10,High
+END RUN_MATRIX
+
+BEGIN ANALYSIS
+  METHOD=ANOVA
+  CONFIDENCE=0.95
+  MAIN_EFFECTS=TRUE
+  INTERACTION_EFFECTS=TRUE
+  PLOTS=Main Effects, Interaction, Cube
+END ANALYSIS

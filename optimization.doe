@@ -1,0 +1,119 @@
+BEGIN DESIGN
+  VERSION=1.0
+  NAME=Liquidity Management Optimization
+  TYPE=Central Composite Design (CCD)
+  DESCRIPTION=Response surface methodology to optimize liquidity management parameters
+  AUTHOR=Arena Liquidity Risk Analysis
+  DATE=2026-02-07
+  REPLICATIONS=30
+  ALPHA=1.682
+  BLOCKS=1
+  CENTER_POINTS=6
+END DESIGN
+
+BEGIN FACTORS
+  COUNT=3
+  
+  FACTOR 1
+    NAME=Cash_Buffer_Percentage
+    TYPE=Numeric
+    SUBTYPE=Continuous
+    UNITS=Percentage
+    LOW=5.0
+    HIGH=25.0
+    CENTER=15.0
+    ALPHA_LOW=-1.82
+    ALPHA_HIGH=31.82
+    DESCRIPTION=Target cash buffer as percentage of total assets
+  END FACTOR
+  
+  FACTOR 2
+    NAME=Asset_Liquidation_Threshold
+    TYPE=Numeric
+    SUBTYPE=Continuous
+    UNITS=Percentage
+    LOW=10.0
+    HIGH=50.0
+    CENTER=30.0
+    ALPHA_LOW=-3.64
+    ALPHA_HIGH=63.64
+    DESCRIPTION=Liquidity threshold triggering asset liquidation
+  END FACTOR
+  
+  FACTOR 3
+    NAME=Emergency_Funding_Cost
+    TYPE=Numeric
+    SUBTYPE=Continuous
+    UNITS=Percentage
+    LOW=0.5
+    HIGH=5.0
+    CENTER=2.75
+    ALPHA_LOW=-1.011
+    ALPHA_HIGH=6.511
+    DESCRIPTION=Annual cost rate for emergency funding facilities
+  END FACTOR
+END FACTORS
+
+BEGIN RESPONSES
+  COUNT=2
+  
+  RESPONSE 1
+    NAME=Total_Cost
+    TYPE=Numeric
+    UNITS=Currency
+    GOAL=Minimize
+    DESCRIPTION=Total operational cost including buffer maintenance and emergency funding
+  END RESPONSE
+  
+  RESPONSE 2
+    NAME=Risk_Adjusted_Return
+    TYPE=Numeric
+    UNITS=Ratio
+    GOAL=Maximize
+    DESCRIPTION=Return on assets adjusted for liquidity risk exposure
+  END RESPONSE
+END RESPONSES
+
+BEGIN RUN_MATRIX
+  RUNS=20
+  # Central Composite Design: 2^3 + 2×3 + 6 = 8 + 6 + 6 = 20 runs
+  # Cube points (8), Axial points (6), Center points (6)
+  # Format: Run, Cash_Buffer_Percentage, Asset_Liquidation_Threshold, Emergency_Funding_Cost, Type
+  
+  # Factorial Points (Cube)
+  RUN 1,5.0,10.0,0.5,Factorial
+  RUN 2,25.0,10.0,0.5,Factorial
+  RUN 3,5.0,50.0,0.5,Factorial
+  RUN 4,25.0,50.0,0.5,Factorial
+  RUN 5,5.0,10.0,5.0,Factorial
+  RUN 6,25.0,10.0,5.0,Factorial
+  RUN 7,5.0,50.0,5.0,Factorial
+  RUN 8,25.0,50.0,5.0,Factorial
+  
+  # Axial Points (Star)
+  RUN 9,-1.82,30.0,2.75,Axial
+  RUN 10,31.82,30.0,2.75,Axial
+  RUN 11,15.0,-3.64,2.75,Axial
+  RUN 12,15.0,63.64,2.75,Axial
+  RUN 13,15.0,30.0,-1.011,Axial
+  RUN 14,15.0,30.0,6.511,Axial
+  
+  # Center Points
+  RUN 15,15.0,30.0,2.75,Center
+  RUN 16,15.0,30.0,2.75,Center
+  RUN 17,15.0,30.0,2.75,Center
+  RUN 18,15.0,30.0,2.75,Center
+  RUN 19,15.0,30.0,2.75,Center
+  RUN 20,15.0,30.0,2.75,Center
+END RUN_MATRIX
+
+BEGIN ANALYSIS
+  METHOD=Response Surface Methodology
+  CONFIDENCE=0.95
+  MODEL=Quadratic
+  FIT_STATISTICS=R-squared, Adjusted R-squared, Predicted R-squared
+  LACK_OF_FIT=Pure Error
+  OPTIMIZATION=Desirability Function
+  PLOTS=3D Response Surface, Contour, Optimization
+  DIAGNOSTICS=Residual, Normal Probability
+END ANALYSIS
