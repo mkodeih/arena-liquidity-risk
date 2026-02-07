@@ -1,0 +1,182 @@
+Design of Experiments: Central Composite Design (CCD) for Parameter Optimization
+================================================================================
+
+Experiment Name: Liquidity Risk Parameter Optimization
+Design Type: Central Composite Design (Rotatable)
+Purpose: Optimize key parameters to minimize liquidity risk while maintaining operational efficiency
+
+Design Parameters:
+-----------------
+Number of Factors: 5
+Number of Center Points: 6
+Alpha (axiality): 2.378 (rotatable design for 5 factors)
+Total Runs: 54 (32 factorial + 10 axial + 6 center + 6 replicates)
+
+Factor Definitions:
+------------------
+Factor A: RESERVE_RATIO
+  Low Level (-1): 0.05
+  High Level (+1): 0.20
+  Center (0): 0.125
+  Axial Low (-α): 0.0109
+  Axial High (+α): 0.2391
+  Units: Ratio (fraction of total assets)
+
+Factor B: PAYMENT_ARRIVAL_RATE
+  Low Level (-1): 50
+  High Level (+1): 200
+  Center (0): 125
+  Axial Low (-α): 14.33
+  Axial High (+α): 235.67
+  Units: Payments per hour
+
+Factor C: INTERBANK_CREDIT_LIMIT
+  Low Level (-1): 1000000
+  High Level (+1): 5000000
+  Center (0): 3000000
+  Axial Low (-α): 48780
+  Axial High (+α): 5951220
+  Units: Currency units
+
+Factor D: COLLATERAL_HAIRCUT
+  Low Level (-1): 0.10
+  High Level (+1): 0.30
+  Center (0): 0.20
+  Axial Low (-α): 0.0524
+  Axial High (+α): 0.3476
+  Units: Ratio (fraction of collateral value)
+
+Factor E: QUEUE_PRIORITY_THRESHOLD
+  Low Level (-1): 100000
+  High Level (+1): 500000
+  Center (0): 300000
+  Axial Low (-α): 4878
+  Axial High (+α): 595122
+  Units: Currency units
+
+Response Variables:
+------------------
+Y1: Average Liquidity Coverage Ratio (LCR)
+  Target: Maximize (optimal ≥ 1.0)
+  
+Y2: Maximum Queue Length
+  Target: Minimize (optimal < 10 payments)
+  
+Y3: Average Settlement Time
+  Target: Minimize (optimal < 5 minutes)
+  
+Y4: Gridlock Frequency
+  Target: Minimize (optimal = 0 events per day)
+  
+Y5: System Throughput
+  Target: Maximize (payments settled per hour)
+
+Run Specifications:
+------------------
+Randomization: Complete randomization with blocking by day
+Replications: 30 per design point
+Simulation Length: 8 hours (one business day)
+Warm-up Period: 1 hour
+
+Experimental Run Table:
+======================
+Run | Block | A     | B     | C       | D     | E       | Type
+----|-------|-------|-------|---------|-------|---------|----------
+1   | 1     | -1    | -1    | -1      | -1    | -1      | Factorial
+2   | 1     | +1    | -1    | -1      | -1    | -1      | Factorial
+3   | 1     | -1    | +1    | -1      | -1    | -1      | Factorial
+4   | 1     | +1    | +1    | -1      | -1    | -1      | Factorial
+5   | 1     | -1    | -1    | +1      | -1    | -1      | Factorial
+6   | 1     | +1    | -1    | +1      | -1    | -1      | Factorial
+7   | 1     | -1    | +1    | +1      | -1    | -1      | Factorial
+8   | 1     | +1    | +1    | +1      | -1    | -1      | Factorial
+9   | 2     | -1    | -1    | -1      | +1    | -1      | Factorial
+10  | 2     | +1    | -1    | -1      | +1    | -1      | Factorial
+11  | 2     | -1    | +1    | -1      | +1    | -1      | Factorial
+12  | 2     | +1    | +1    | -1      | +1    | -1      | Factorial
+13  | 2     | -1    | -1    | +1      | +1    | -1      | Factorial
+14  | 2     | +1    | -1    | +1      | +1    | -1      | Factorial
+15  | 2     | -1    | +1    | +1      | +1    | -1      | Factorial
+16  | 2     | +1    | +1    | +1      | +1    | -1      | Factorial
+17  | 3     | -1    | -1    | -1      | -1    | +1      | Factorial
+18  | 3     | +1    | -1    | -1      | -1    | +1      | Factorial
+19  | 3     | -1    | +1    | -1      | -1    | +1      | Factorial
+20  | 3     | +1    | +1    | -1      | -1    | +1      | Factorial
+21  | 3     | -1    | -1    | +1      | -1    | +1      | Factorial
+22  | 3     | +1    | -1    | +1      | -1    | +1      | Factorial
+23  | 3     | -1    | +1    | +1      | -1    | +1      | Factorial
+24  | 3     | +1    | +1    | +1      | -1    | +1      | Factorial
+25  | 4     | -1    | -1    | -1      | +1    | +1      | Factorial
+26  | 4     | +1    | -1    | -1      | +1    | +1      | Factorial
+27  | 4     | -1    | +1    | -1      | +1    | +1      | Factorial
+28  | 4     | +1    | +1    | -1      | +1    | +1      | Factorial
+29  | 4     | -1    | -1    | +1      | +1    | +1      | Factorial
+30  | 4     | +1    | -1    | +1      | +1    | +1      | Factorial
+31  | 4     | -1    | +1    | +1      | +1    | +1      | Factorial
+32  | 4     | +1    | +1    | +1      | +1    | +1      | Factorial
+33  | 5     | -2.378| 0     | 0       | 0     | 0       | Axial
+34  | 5     | +2.378| 0     | 0       | 0     | 0       | Axial
+35  | 5     | 0     | -2.378| 0       | 0     | 0       | Axial
+36  | 5     | 0     | +2.378| 0       | 0     | 0       | Axial
+37  | 5     | 0     | 0     | -2.378  | 0     | 0       | Axial
+38  | 5     | 0     | 0     | +2.378  | 0     | 0       | Axial
+39  | 5     | 0     | 0     | 0       | -2.378| 0       | Axial
+40  | 5     | 0     | 0     | 0       | +2.378| 0       | Axial
+41  | 5     | 0     | 0     | 0       | 0     | -2.378  | Axial
+42  | 5     | 0     | 0     | 0       | 0     | +2.378  | Axial
+43  | 6     | 0     | 0     | 0       | 0     | 0       | Center
+44  | 6     | 0     | 0     | 0       | 0     | 0       | Center
+45  | 6     | 0     | 0     | 0       | 0     | 0       | Center
+46  | 6     | 0     | 0     | 0       | 0     | 0       | Center
+47  | 6     | 0     | 0     | 0       | 0     | 0       | Center
+48  | 6     | 0     | 0     | 0       | 0     | 0       | Center
+49  | 7     | +1    | +1    | +1      | +1    | +1      | Replicate
+50  | 7     | -1    | -1    | -1      | -1    | -1      | Replicate
+51  | 7     | +1    | -1    | +1      | -1    | +1      | Replicate
+52  | 7     | -1    | +1    | -1      | +1    | -1      | Replicate
+53  | 7     | +1    | +1    | -1      | -1    | +1      | Replicate
+54  | 7     | -1    | -1    | +1      | +1    | -1      | Replicate
+
+Analysis Plan:
+-------------
+1. Fit second-order response surface model for each response
+2. Check model adequacy (R², adjusted R², lack of fit)
+3. Perform ANOVA to identify significant factors and interactions
+4. Generate contour plots and 3D surface plots
+5. Perform optimization using desirability function
+6. Validate optimal settings with confirmation runs
+
+Model Form:
+-----------
+Y = β₀ + Σβᵢxᵢ + Σβᵢᵢxᵢ² + ΣΣβᵢⱼxᵢxⱼ + ε
+
+Where:
+- Y is the response variable
+- xᵢ are the coded factor levels
+- β coefficients estimated via least squares
+- ε is random error
+
+Optimization Criteria:
+---------------------
+Composite Desirability Function:
+D = (d₁^w₁ × d₂^w₂ × d₃^w₃ × d₄^w₄ × d₅^w₅)^(1/Σwᵢ)
+
+Individual Desirability Weights:
+- LCR (Y1): w₁ = 0.30 (high importance)
+- Queue Length (Y2): w₂ = 0.20
+- Settlement Time (Y3): w₃ = 0.20
+- Gridlock Frequency (Y4): w₄ = 0.25 (high importance)
+- Throughput (Y5): w₅ = 0.05
+
+Constraints:
+- RESERVE_RATIO ≥ 0.05 (regulatory minimum)
+- LCR ≥ 1.0 (Basel III requirement)
+- Settlement Time ≤ 30 minutes (regulatory deadline)
+
+Expected Deliverables:
+---------------------
+1. Response surface models for all responses
+2. ANOVA tables showing factor significance
+3. Optimization results with predicted responses
+4. Confirmation run results
+5. Recommendations for operational parameter settings

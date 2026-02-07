@@ -1,0 +1,33 @@
+Payment_ID,Source_Institution,Target_Institution,Amount,Priority,Timestamp,Currency,Payment_Type
+PAY00001,INST002,INST001,500000,HIGH,08:00:00,USD,RTGS
+PAY00002,INST003,INST002,250000,NORMAL,08:05:30,USD,WIRE
+PAY00003,INST001,INST004,1000000,HIGH,08:12:15,USD,RTGS
+PAY00004,INST005,INST003,150000,NORMAL,08:18:45,USD,ACH
+PAY00005,INST004,INST001,750000,HIGH,08:25:20,USD,RTGS
+
+# Payment Parameters Template
+#
+# Column Descriptions:
+# - Payment_ID: Unique identifier for each payment transaction
+# - Source_Institution: ID of institution sending payment
+# - Target_Institution: ID of institution receiving payment
+# - Amount: Payment value in currency units
+# - Priority: Payment priority level (HIGH, NORMAL, LOW)
+# - Timestamp: Time of payment submission (HH:MM:SS)
+# - Currency: Currency code (USD, EUR, GBP, etc.)
+# - Payment_Type: Type of payment system (RTGS, WIRE, ACH, etc.)
+#
+# Priority Levels:
+# - HIGH: Time-critical payments, processed immediately
+# - NORMAL: Standard payments, FIFO processing
+# - LOW: Deferred payments, processed during low-activity periods
+#
+# Payment Types:
+# - RTGS: Real-Time Gross Settlement (immediate, individual)
+# - WIRE: Wire transfer (same-day settlement)
+# - ACH: Automated Clearing House (batch processing)
+#
+# Notes:
+# - All amounts must be positive values
+# - Timestamps should be in 24-hour format
+# - Source and Target institutions must exist in institution_config

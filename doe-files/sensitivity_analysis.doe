@@ -1,0 +1,312 @@
+Design of Experiments: One-at-a-Time (OAT) Sensitivity Analysis
+================================================================================
+
+Experiment Name: Liquidity Risk Model Sensitivity Analysis
+Design Type: One-at-a-Time Perturbation Analysis
+Purpose: Assess individual parameter impact on model outputs and identify critical factors
+
+Analysis Framework:
+------------------
+Method: OAT with percentage perturbations around baseline
+Baseline: Median operating conditions from historical data
+Perturbation Levels: -50%, -25%, -10%, +10%, +25%, +50%
+Replications: 50 per parameter setting
+Total Runs: 1,950 (13 parameters × 6 levels × 25 base runs)
+
+Base Case Parameters:
+--------------------
+RESERVE_RATIO: 0.125
+PAYMENT_ARRIVAL_RATE: 125 payments/hour
+AVERAGE_PAYMENT_SIZE: 250000 currency units
+PAYMENT_SIZE_STDDEV: 100000 currency units
+INTERBANK_CREDIT_LIMIT: 3000000 currency units
+COLLATERAL_HAIRCUT: 0.20
+LIQUIDITY_BUFFER: 5000000 currency units
+QUEUE_PRIORITY_THRESHOLD: 300000 currency units
+GRIDLOCK_RESOLUTION_TIME: 30 minutes
+MARKET_VOLATILITY: 0.15
+STRESS_EVENT_PROBABILITY: 0.02
+SETTLEMENT_DELAY_MEAN: 2 minutes
+CENTRAL_BANK_FACILITY_RATE: 0.05
+
+Sensitivity Parameters:
+======================
+
+Parameter 1: RESERVE_RATIO
+--------------------------
+Description: Fraction of total assets held as liquid reserves
+Baseline: 0.125 (12.5%)
+Perturbation Levels:
+  -50%: 0.0625
+  -25%: 0.0938
+  -10%: 0.1125
+  +10%: 0.1375
+  +25%: 0.1563
+  +50%: 0.1875
+Expected Impact: High on LCR, moderate on settlement times
+Criticality: HIGH (regulatory requirement)
+
+Parameter 2: PAYMENT_ARRIVAL_RATE
+---------------------------------
+Description: Average number of payments arriving per hour
+Baseline: 125 payments/hour
+Perturbation Levels:
+  -50%: 62.5
+  -25%: 93.75
+  -10%: 112.5
+  +10%: 137.5
+  +25%: 156.25
+  +50%: 187.5
+Expected Impact: High on queue length and system capacity
+Criticality: HIGH (operational capacity)
+
+Parameter 3: AVERAGE_PAYMENT_SIZE
+---------------------------------
+Description: Mean value of individual payments
+Baseline: 250000 currency units
+Perturbation Levels:
+  -50%: 125000
+  -25%: 187500
+  -10%: 225000
+  +10%: 275000
+  +25%: 312500
+  +50%: 375000
+Expected Impact: High on liquidity demands
+Criticality: MEDIUM
+
+Parameter 4: PAYMENT_SIZE_STDDEV
+--------------------------------
+Description: Standard deviation of payment amounts
+Baseline: 100000 currency units
+Perturbation Levels:
+  -50%: 50000
+  -25%: 75000
+  -10%: 90000
+  +10%: 110000
+  +25%: 125000
+  +50%: 150000
+Expected Impact: Moderate on system volatility
+Criticality: MEDIUM
+
+Parameter 5: INTERBANK_CREDIT_LIMIT
+-----------------------------------
+Description: Maximum credit line between institutions
+Baseline: 3000000 currency units
+Perturbation Levels:
+  -50%: 1500000
+  -25%: 2250000
+  -10%: 2700000
+  +10%: 3300000
+  +25%: 3750000
+  +50%: 4500000
+Expected Impact: High on gridlock prevention
+Criticality: HIGH (systemic stability)
+
+Parameter 6: COLLATERAL_HAIRCUT
+-------------------------------
+Description: Discount applied to collateral value
+Baseline: 0.20 (20%)
+Perturbation Levels:
+  -50%: 0.10
+  -25%: 0.15
+  -10%: 0.18
+  +10%: 0.22
+  +25%: 0.25
+  +50%: 0.30
+Expected Impact: Moderate on available liquidity
+Criticality: MEDIUM
+
+Parameter 7: LIQUIDITY_BUFFER
+-----------------------------
+Description: Additional cash reserves for emergencies
+Baseline: 5000000 currency units
+Perturbation Levels:
+  -50%: 2500000
+  -25%: 3750000
+  -10%: 4500000
+  +10%: 5500000
+  +25%: 6250000
+  +50%: 7500000
+Expected Impact: Moderate on stress resilience
+Criticality: MEDIUM
+
+Parameter 8: QUEUE_PRIORITY_THRESHOLD
+-------------------------------------
+Description: Payment size threshold for priority processing
+Baseline: 300000 currency units
+Perturbation Levels:
+  -50%: 150000
+  -25%: 225000
+  -10%: 270000
+  +10%: 330000
+  +25%: 375000
+  +50%: 450000
+Expected Impact: Moderate on settlement efficiency
+Criticality: LOW
+
+Parameter 9: GRIDLOCK_RESOLUTION_TIME
+-------------------------------------
+Description: Maximum time allowed before gridlock intervention
+Baseline: 30 minutes
+Perturbation Levels:
+  -50%: 15 minutes
+  -25%: 22.5 minutes
+  -10%: 27 minutes
+  +10%: 33 minutes
+  +25%: 37.5 minutes
+  +50%: 45 minutes
+Expected Impact: High on operational risk
+Criticality: HIGH
+
+Parameter 10: MARKET_VOLATILITY
+-------------------------------
+Description: Standard deviation of asset price changes
+Baseline: 0.15 (15%)
+Perturbation Levels:
+  -50%: 0.075
+  -25%: 0.1125
+  -10%: 0.135
+  +10%: 0.165
+  +25%: 0.1875
+  +50%: 0.225
+Expected Impact: High on collateral value fluctuations
+Criticality: HIGH (market risk)
+
+Parameter 11: STRESS_EVENT_PROBABILITY
+--------------------------------------
+Description: Daily probability of extreme market event
+Baseline: 0.02 (2% per day)
+Perturbation Levels:
+  -50%: 0.01
+  -25%: 0.015
+  -10%: 0.018
+  +10%: 0.022
+  +25%: 0.025
+  +50%: 0.03
+Expected Impact: Moderate on tail risk
+Criticality: MEDIUM
+
+Parameter 12: SETTLEMENT_DELAY_MEAN
+-----------------------------------
+Description: Average processing time for payment settlement
+Baseline: 2 minutes
+Perturbation Levels:
+  -50%: 1 minute
+  -25%: 1.5 minutes
+  -10%: 1.8 minutes
+  +10%: 2.2 minutes
+  +25%: 2.5 minutes
+  +50%: 3 minutes
+Expected Impact: Moderate on throughput
+Criticality: MEDIUM
+
+Parameter 13: CENTRAL_BANK_FACILITY_RATE
+----------------------------------------
+Description: Interest rate for central bank emergency lending
+Baseline: 0.05 (5% annual)
+Perturbation Levels:
+  -50%: 0.025
+  -25%: 0.0375
+  -10%: 0.045
+  +10%: 0.055
+  +25%: 0.0625
+  +50%: 0.075
+Expected Impact: Low on facility usage decisions
+Criticality: LOW
+
+Response Metrics:
+----------------
+Primary Responses:
+1. Liquidity Coverage Ratio (LCR)
+2. Net Stable Funding Ratio (NSFR)
+3. Maximum Queue Length
+4. Average Settlement Time
+5. Gridlock Events per Day
+6. System Throughput (payments/hour)
+
+Secondary Responses:
+7. 95th Percentile Settlement Time
+8. Collateral Utilization Rate
+9. Interbank Credit Usage
+10. Central Bank Facility Draws
+11. Payment Rejection Rate
+12. Intraday Liquidity Shortfall
+
+Experimental Procedure:
+======================
+
+Phase 1: Baseline Validation (Runs 1-50)
+----------------------------------------
+- Run baseline scenario 50 times
+- Establish reference distributions for all responses
+- Calculate baseline mean, std dev, 95% CI for each metric
+- Verify model stability and randomness
+
+Phase 2: Parameter Perturbations (Runs 51-1950)
+-----------------------------------------------
+For each parameter i = 1 to 13:
+  For each perturbation level j = 1 to 6:
+    Run 25 replications
+    Record all response metrics
+    Calculate sensitivity index: SI = (ΔY/Y₀)/(Δx/x₀)
+
+Phase 3: Analysis
+-----------------
+1. Calculate absolute sensitivity: |ΔResponse|/|ΔParameter|
+2. Calculate relative sensitivity: (ΔResponse/Response₀)/(ΔParameter/Parameter₀)
+3. Generate tornado diagrams for each response
+4. Rank parameters by impact magnitude
+5. Identify critical parameters (high sensitivity)
+6. Assess parameter interaction indicators
+7. Define acceptable parameter ranges
+
+Sensitivity Index Calculation:
+------------------------------
+For parameter x and response y:
+
+Absolute Sensitivity:
+  S_abs = Δy/Δx = (y_perturbed - y_baseline)/(x_perturbed - x_baseline)
+
+Relative Sensitivity:
+  S_rel = (Δy/y_baseline)/(Δx/x_baseline)
+
+Normalized Sensitivity:
+  S_norm = (y_perturbed - y_baseline)/σ_baseline
+
+Where σ_baseline is the standard deviation at baseline
+
+Data Collection Template:
+========================
+Run | Parameter | Level | Pert% | Value    | LCR  | NSFR | QLen | Time | Grid | Thru
+----|-----------|-------|-------|----------|------|------|------|------|------|------
+1   | BASE      | 0     | 0%    | N/A      |      |      |      |      |      |
+... | ...       | ...   | ...   | ...      | ...  | ...  | ...  | ...  | ...  | ...
+51  | RR        | -50%  | -50%  | 0.0625   |      |      |      |      |      |
+... | ...       | ...   | ...   | ...      | ...  | ...  | ...  | ...  | ...  | ...
+
+Analysis Outputs:
+================
+1. Sensitivity ranking table (parameters ordered by impact)
+2. Tornado diagrams for each response variable
+3. Spider plots showing multi-response sensitivity
+4. Critical parameter identification report
+5. Recommended parameter uncertainty ranges
+6. Model robustness assessment
+7. Parameter interaction hypothesis for follow-up factorial design
+
+Acceptance Criteria:
+===================
+- Coefficient of variation < 5% for baseline runs
+- Monotonic response to monotonic parameter changes (where expected)
+- Sensitivity indices statistically significant (p < 0.05)
+- Top 5 critical parameters identified with confidence
+- Reproducibility confirmed across replications
+
+Report Deliverables:
+===================
+1. Executive summary of critical parameters
+2. Detailed sensitivity analysis tables
+3. Visualization suite (tornado, spider, scatter plots)
+4. Recommendations for parameter control priorities
+5. Suggestions for further investigation (factorial DOE)
+6. Model validation assessment based on sensitivity patterns

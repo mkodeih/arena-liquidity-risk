@@ -1,0 +1,39 @@
+Scenario,Date,Interest_Rate,Market_Volatility,Liquidity_Premium,Asset_Correlation,Stress_Probability,FX_Rate,Collateral_Value_Index
+NORMAL,2024-01-15,0.045,0.12,0.005,0.35,0.01,1.00,100.0
+MODERATE_STRESS,2024-01-15,0.055,0.18,0.015,0.55,0.05,0.98,95.0
+HIGH_STRESS,2024-01-15,0.075,0.28,0.035,0.75,0.15,0.92,85.0
+CRISIS,2024-01-15,0.120,0.45,0.080,0.90,0.35,0.85,70.0
+
+# Market Conditions Configuration Template
+#
+# Column Descriptions:
+# - Scenario: Market condition scenario name
+# - Date: Effective date for the scenario (YYYY-MM-DD)
+# - Interest_Rate: Risk-free interest rate (annual, decimal)
+# - Market_Volatility: Overall market volatility (standard deviation)
+# - Liquidity_Premium: Additional yield for illiquid assets
+# - Asset_Correlation: Average correlation between asset returns (0-1)
+# - Stress_Probability: Probability of extreme event per day
+# - FX_Rate: Foreign exchange rate multiplier (base = 1.00)
+# - Collateral_Value_Index: Market value of collateral assets (base = 100)
+#
+# Scenario Definitions:
+# - NORMAL: Standard market conditions, low volatility
+# - MODERATE_STRESS: Elevated volatility, some market pressure
+# - HIGH_STRESS: Significant market disruption, high correlations
+# - CRISIS: Extreme conditions, potential systemic risk
+#
+# Parameter Ranges (typical):
+# - Interest_Rate: 0.00 to 0.15 (0% to 15% annual)
+# - Market_Volatility: 0.08 to 0.50 (8% to 50%)
+# - Liquidity_Premium: 0.00 to 0.10 (0 to 10%)
+# - Asset_Correlation: 0.20 to 0.95 (low to very high)
+# - Stress_Probability: 0.001 to 0.50 (0.1% to 50% per day)
+# - FX_Rate: 0.80 to 1.20 (±20% movement)
+# - Collateral_Value_Index: 50 to 110 (50% to 110% of par)
+#
+# Usage Notes:
+# - Multiple scenarios can be defined for stress testing
+# - Parameters should reflect correlated market movements
+# - Higher volatility typically correlates with higher correlations
+# - Crisis scenarios should include multiple simultaneous shocks
