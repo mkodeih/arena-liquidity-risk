@@ -1,0 +1,122 @@
+BEGIN DESIGN
+  VERSION=1.0
+  NAME=Liquidity Stress Testing
+  TYPE=Fractional Factorial Design (1/2 fraction)
+  DESCRIPTION=Stress testing scenarios to evaluate system resilience under extreme market shocks
+  AUTHOR=Arena Liquidity Risk Analysis
+  DATE=2026-02-07
+  REPLICATIONS=30
+  RESOLUTION=V
+  GENERATOR=I=ABC
+END DESIGN
+
+BEGIN FACTORS
+  COUNT=3
+  
+  FACTOR 1
+    NAME=Shock_Magnitude
+    TYPE=Numeric
+    SUBTYPE=Discrete
+    UNITS=Percentage
+    LEVELS=5
+    VALUES=5,10,15,20,25
+    DESCRIPTION=Magnitude of sudden liquidity shock
+  END FACTOR
+  
+  FACTOR 2
+    NAME=Recovery_Time
+    TYPE=Numeric
+    SUBTYPE=Discrete
+    UNITS=Days
+    LEVELS=4
+    VALUES=5,10,15,20
+    DESCRIPTION=Time required for market to recover to normal conditions
+  END FACTOR
+  
+  FACTOR 3
+    NAME=Contagion_Probability
+    TYPE=Numeric
+    SUBTYPE=Discrete
+    UNITS=Probability
+    LEVELS=4
+    VALUES=0.1,0.3,0.5,0.7
+    DESCRIPTION=Probability of shock spreading to connected institutions
+  END FACTOR
+END FACTORS
+
+BEGIN RESPONSES
+  COUNT=2
+  
+  RESPONSE 1
+    NAME=Survival_Probability
+    TYPE=Numeric
+    UNITS=Probability
+    GOAL=Maximize
+    DESCRIPTION=Probability of maintaining adequate liquidity throughout stress period
+  END RESPONSE
+  
+  RESPONSE 2
+    NAME=Liquidity_Coverage_Ratio
+    TYPE=Numeric
+    UNITS=Ratio
+    GOAL=Maximize
+    DESCRIPTION=Minimum liquidity coverage ratio during stress scenario
+  END RESPONSE
+END RESPONSES
+
+BEGIN RUN_MATRIX
+  RUNS=40
+  # Fractional factorial (1/2 fraction): 5 × 4 × 4 / 2 = 40 runs
+  # Selected using Resolution V design to minimize aliasing
+  # Format: Run, Shock_Magnitude, Recovery_Time, Contagion_Probability
+  
+  RUN 1,5,5,0.1
+  RUN 2,5,5,0.7
+  RUN 3,5,10,0.3
+  RUN 4,5,10,0.5
+  RUN 5,5,15,0.1
+  RUN 6,5,15,0.7
+  RUN 7,5,20,0.3
+  RUN 8,5,20,0.5
+  RUN 9,10,5,0.3
+  RUN 10,10,5,0.5
+  RUN 11,10,10,0.1
+  RUN 12,10,10,0.7
+  RUN 13,10,15,0.3
+  RUN 14,10,15,0.5
+  RUN 15,10,20,0.1
+  RUN 16,10,20,0.7
+  RUN 17,15,5,0.1
+  RUN 18,15,5,0.7
+  RUN 19,15,10,0.3
+  RUN 20,15,10,0.5
+  RUN 21,15,15,0.1
+  RUN 22,15,15,0.7
+  RUN 23,15,20,0.3
+  RUN 24,15,20,0.5
+  RUN 25,20,5,0.3
+  RUN 26,20,5,0.5
+  RUN 27,20,10,0.1
+  RUN 28,20,10,0.7
+  RUN 29,20,15,0.3
+  RUN 30,20,15,0.5
+  RUN 31,20,20,0.1
+  RUN 32,20,20,0.7
+  RUN 33,25,5,0.1
+  RUN 34,25,5,0.7
+  RUN 35,25,10,0.3
+  RUN 36,25,10,0.5
+  RUN 37,25,15,0.1
+  RUN 38,25,15,0.7
+  RUN 39,25,20,0.3
+  RUN 40,25,20,0.5
+END RUN_MATRIX
+
+BEGIN ANALYSIS
+  METHOD=ANOVA
+  CONFIDENCE=0.95
+  MAIN_EFFECTS=TRUE
+  TWO_WAY_INTERACTIONS=TRUE
+  ALIAS_STRUCTURE=Display
+  NORMAL_PROBABILITY_PLOT=TRUE
+END ANALYSIS
